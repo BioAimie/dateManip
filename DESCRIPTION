@@ -1,0 +1,13 @@
+Package: dateManip
+Type: Package
+Title: Manipulate Date Information to Fill In Data Gaps and Allow Averaging of
+    Missing Values
+Version: 1.0
+Authors@R: person("Aimie", "Faucett", email = "aimie.faucett@biofiredx.com", role = c("aut", "cre"))
+Description: Manipulates data frames with date information such that all dates
+    in the sequence contain data with an entry of NA or 0 if data are missing.
+    Averaging and other statistical functions are modified to allow for NA or 0
+    values across the date sequence.
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 5.0.1

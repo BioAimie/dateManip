@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Find the start date in the format of a character DateGroup using today's DateGroup as the starting point.\n#'\n#' The function sequences DateGroups from last date to today, incrementing by -1, and keeps the number of DateGroup units as specified by the user.\n#'\n#' @param msCalFrame is a data frame (non-sparse) of all dates and DateGroups, an output of \\code{createCalendarLikeMicrosoft} function\n#' @param yearSubGroup is a sub-group of a year, i.e. 'Week', 'Month', or 'Quarter'\n#' @param timeUnitsToKeep is a numeric value indicating how many of DateGroup entries to keep (incremented by 1 backwards from today's DateGroup)\n#' @param rollPeriods is a numeric value indicating how many additional periods should be included in case the user wants to find a rolling sum, the default is 0.\n#' @return a character string DateGroup at timeUnitsToKeep + rollPeriods prior (e.g. 2016-01 if today's DateGroup is 2016-10 and timeUnitsToKeep = 9 and rollPeriods = 0)\n#' @author Aimie Faucett\n#' @details\n#' This function takes in msCalFrame, yearSubGroup, timeUnitsToKeep, and rollPeriods. The unique msCalFrame DateGroups are found and then sequenced in descending order. The number of entries\n#' kept is specified by timeUnitsToKeep + rollPeriods. The function returns the startDate (character string) as determined by the timeUnitsToKeep +\n#' rollPeriods prior to the most current DateGroup.\n#' @export\n\nfindStartDate <- function(msCalFrame, yearSubGroup, timeUnitsToKeep, rollPeriods = 0) {\n\n  uniqueCal <- unique(msCalFrame[,c('Year', yearSubGroup, 'DateGroup')])\n  uniqueCal[,'Index'] <- seq(length(uniqueCal[,'Year']), 1, -1)\n\n  if(rollPeriods > 0) {\n\n    timeUnitsToKeep <- timeUnitsToKeep + rollPeriods\n  }\n\n  if(timeUnitsToKeep > max(uniqueCal[,'Index'])) {\n\n    stop('The timeUnitsToKeep parameter suggests keeping more periods than possible given the msCalFrame parameter.')\n  }\n\n  outFrame <- uniqueCal[uniqueCal[,'Index'] <= timeUnitsToKeep, c('Year', yearSubGroup, 'DateGroup')]\n  startDate <- min(outFrame[,'DateGroup'])\n  return(startDate)\n}\n",
+    "created" : 1464710151833.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2436079087",
+    "id" : "AA4A9842",
+    "lastKnownWriteTime" : 1464909672,
+    "last_content_update" : 1464909672151,
+    "path" : "~/dateManip/R/findStartDate.R",
+    "project_path" : "R/findStartDate.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
