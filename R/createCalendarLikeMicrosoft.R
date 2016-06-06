@@ -11,6 +11,7 @@
 #' through today along with the year and yearSubGroup number. If the yearSubGroup is 'Week', then the function will return week numbers consistent
 #' with Microsoft's Excel WEEKNUM and SQL DATEPART(ww, ) functions.
 #' @export
+#' @importFrom lubridate month year
 
 createCalendarLikeMicrosoft <- function(startYear, yearSubGroup) {
 

@@ -19,7 +19,7 @@
 #' mergeColsX and mergeColsY and then finding a rate for each unique combination of the merged columns.
 #' @export
 
-mergeCalSparceFrames <- function(numFrame, denomFrame, mergeColsX, mergeColsY, numNumeric, denomNumeric, sparseHandling, rollPeriods = 0) {
+mergeCalSparseFrames <- function(numFrame, denomFrame, mergeColsX, mergeColsY, numNumeric, denomNumeric, sparseHandling, rollPeriods = 0) {
 
   colnames(numFrame)[grep(paste('\\b',numNumeric,'\\b',sep=''), colnames(numFrame))] <- 'numRecord'
   colnames(denomFrame)[grep(paste('\\b',denomNumeric,'\\b',sep=''), colnames(denomFrame))] <- 'denomRecord'
