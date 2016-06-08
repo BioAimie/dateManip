@@ -13,7 +13,7 @@ addStatsToSparseHandledData(sparseRateFrame, ratePartitionVec,
 
 \item{ratePartitionVec}{a character string vector that specifies how to parition the categories in the data frame}
 
-\item{returnLimits}{a logical with default TRUE that specifies whether or not the data frame returned shoudl have limits}
+\item{returnLimits}{a logical with default FALSE that specifies whether or not the data frame returned should have limits}
 
 \item{limitFactor}{a numeric, default of 3, that specifies the number of standard deviations from the mean to set the limit}
 

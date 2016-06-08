@@ -30,7 +30,13 @@ aggregateAndFillDateGroupGaps <- function(msCalFrame, yearSubGroup, gappedFrame,
   formulaString <- paste(functionCol, paste('DateGroup', paste(colsToAgg, collapse='+'), sep='+'), sep='~')
   gappedFrame.agg <- with(gappedFrame[gappedFrame[,'DateGroup'] >= startDate, ], aggregate(as.formula(formulaString), FUN = funToPerform, na.rm = TRUE))
 
-  gappedFrame.agg[,'combocat'] <- do.call(paste, c(gappedFrame.agg[,colsToAgg], sep=','))
+  if(length(colsToAgg) == 1) {
+
+    gappedFrame.agg[,'combocat'] <- gappedFrame.agg[,colsToAgg]
+  } else {
+
+    gappedFrame.agg[,'combocat'] <- do.call(paste, c(gappedFrame.agg[,colsToAgg], sep=','))
+  }
   comboCats <- as.character(unique(gappedFrame.agg[,'combocat']))
   crossJoined <- do.call(rbind, lapply(1:length(comboCats), function(x) cbind(merge(unique(baseFrame[,c('Year','DateGroup')]), gappedFrame.agg[gappedFrame.agg[,'combocat'] == comboCats[x], c('DateGroup','Record')], all.x=TRUE, by='DateGroup'), combocat = comboCats[x])))
   decoded <- as.data.frame(sapply(1:length(colsToAgg), function(x) do.call(rbind, strsplit(as.character(crossJoined[,'combocat']), split=','))[,x]))

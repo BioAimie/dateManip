@@ -4,7 +4,7 @@
 #'
 #' @param sparseRateFrame a sparse data frame created using the \code{mergeCalSparseFrames} function
 #' @param ratePartitionVec a character string vector that specifies how to parition the categories in the data frame
-#' @param returnLimits a logical with default TRUE that specifies whether or not the data frame returned shoudl have limits
+#' @param returnLimits a logical with default FALSE that specifies whether or not the data frame returned should have limits
 #' @param limitFactor a numeric, default of 3, that specifies the number of standard deviations from the mean to set the limit
 #' @param limitSide a character string, default of upper, that indicates whether the limit should be +X from the mean (upper), -X from the mean (lower), or +/-X from the mean (two.sided)
 #' @param altUL a numeric, default of 0.001, that indicates a default limit if the altUL > limitFactor*sd(X)
@@ -23,7 +23,7 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, retur
   sparseRateFrame[,'combocat'] <- do.call(paste, c(sparseRateFrame[,ratePartitionVec], sep=','))
   comboCats <- as.character(unique(sparseRateFrame[,'combocat']))
 
-  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(cc), function(x) cbind(combocat = cc[x], Avg = mean(rate.cat[rate.cat[,'combocat'] == cc[x], 'Rate'], na.rm=TRUE)))))
+  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE)))))
   sparseRateFrame <- merge(sparseRateFrame, avgFrame, by='combocat')
 
   if(returnLimits == FALSE) {
@@ -31,7 +31,7 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, retur
     return(sparseRateFrame)
   } else {
 
-    sdFrame <- as.data.frame(do.call(rbind, lapply(1:length(cc), function(x) cbind(combocat = cc[x], Sdev = sd(rate.cat[rate.cat[,'combocat'] == cc[x], 'Rate'], na.rm=TRUE)))))
+    sdFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Sdev = sd(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE)))))
     sparseRateFrame <- merge(sparseRateFrame, sdFrame, by='combocat')
 
     if(limitSide == 'upper') {

@@ -17,4 +17,8 @@ G%3A%2FDepartments%2FPostMarket%2FDataScienceGroup%2FData%20Science%20Team%20Man
 ~%2FdateManip%2FR%2Fhello.R="58D77112"
 ~%2FdateManip%2FR%2FmergeCalSparseFrames.R="C9EBC035"
 ~%2FdateManip%2Fman%2FaddStatsToSparseHandledData.Rd="AE871A42"
+~%2FdateManip%2Fman%2FaggregateAndFillDateGroupGaps.Rd="EA3554AC"
+~%2FdateManip%2Fman%2FcreateCalendarLikeMicrosoft.Rd="C74B5DF4"
+~%2FdateManip%2Fman%2FfindStartDate.Rd="8CB5058"
 ~%2FdateManip%2Fman%2Fhello.Rd="C8686727"
+~%2FdateManip%2Fman%2FmergeCalSparseFrames.Rd="657FCE1E"
