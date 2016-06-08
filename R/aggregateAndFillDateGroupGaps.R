@@ -33,8 +33,7 @@ aggregateAndFillDateGroupGaps <- function(msCalFrame, yearSubGroup, gappedFrame,
   gappedFrame.agg[,'combocat'] <- do.call(paste, c(gappedFrame.agg[,colsToAgg], sep=','))
   comboCats <- as.character(unique(gappedFrame.agg[,'combocat']))
   crossJoined <- do.call(rbind, lapply(1:length(comboCats), function(x) cbind(merge(unique(baseFrame[,c('Year','DateGroup')]), gappedFrame.agg[gappedFrame.agg[,'combocat'] == comboCats[x], c('DateGroup','Record')], all.x=TRUE, by='DateGroup'), combocat = comboCats[x])))
-
-  decoded <- as.data.frame(sapply(1:3, function(x) do.call(rbind, strsplit(as.character(crossJoined[,'combocat']), split=','))[,x]))
+  decoded <- as.data.frame(sapply(1:length(colsToAgg), function(x) do.call(rbind, strsplit(as.character(crossJoined[,'combocat']), split=','))[,x]))
   colnames(decoded) <- colsToAgg
 
   outFrame <- cbind(crossJoined[,c('DateGroup',functionCol)], decoded)
