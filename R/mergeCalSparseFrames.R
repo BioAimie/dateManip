@@ -29,13 +29,19 @@ mergeCalSparseFrames <- function(numFrame, denomFrame, mergeColsX, mergeColsY, n
   if(rollPeriods > 0) {
 
     colsToAgg <- colnames(mrgFrame)[!(colnames(mrgFrame) %in% c('DateGroup','numRecord','denomRecord'))]
-    mrgFrame[,'combocat'] <- do.call(paste, c(mrgFrame[,colsToAgg], sep=','))
-    comboCats <- as.character(unique(mrgFrame[,'combocat']))
 
+    if(length(colsToAgg) <= 1) {
+
+      mrgFrame[,'combocat'] <- mrgFrame[,colsToAgg]
+    } else {
+
+      mrgFrame[,'combocat'] <- do.call(paste, c(mrgFrame[,colsToAgg], sep=','))
+    }
+
+    comboCats <- as.character(unique(mrgFrame[,'combocat']))
     numRoll <- do.call(rbind, lapply(1:length(comboCats), function(x) cbind(DateGroup = as.character(unique(mrgFrame[,'DateGroup']))[rollPeriods:length(as.character(unique(mrgFrame[,'DateGroup'])))], combocat = comboCats[x], sapply(rollPeriods:length(as.character(unique(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'DateGroup']))), function(y) ifelse(sum(is.na(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'numRecord'][(y-(rollPeriods-1)):y])) == rollPeriods, NA, sum(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'numRecord'][(y-(rollPeriods-1)):y], na.rm=TRUE))))))
     denomRoll <- do.call(rbind, lapply(1:length(comboCats), function(x) cbind(DateGroup = as.character(unique(mrgFrame[,'DateGroup']))[rollPeriods:length(as.character(unique(mrgFrame[,'DateGroup'])))], combocat = comboCats[x], sapply(rollPeriods:length(as.character(unique(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'DateGroup']))), function(y) ifelse(sum(is.na(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'denomRecord'][(y-(rollPeriods-1)):y])) == rollPeriods, NA, sum(mrgFrame[mrgFrame[,'combocat'] == comboCats[x], 'denomRecord'][(y-(rollPeriods-1)):y], na.rm=TRUE))))))
     rolled <- merge(numRoll, denomRoll, by=c('DateGroup','combocat'))
-
     mrgFrame <- merge(mrgFrame, rolled, by=c('DateGroup','combocat'))
     colnames(mrgFrame)[grep('V3', colnames(mrgFrame))] <- c('numRoll','denomRoll')
     mrgFrame[,'numRoll'] <- as.numeric(as.character(mrgFrame[,'numRoll']))
