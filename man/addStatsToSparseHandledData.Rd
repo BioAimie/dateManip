@@ -5,13 +5,15 @@
 \title{Return the mean and limits for the sparse data frame, allowing for alternate limits and one sided or two sided limits.}
 \usage{
 addStatsToSparseHandledData(sparseRateFrame, ratePartitionVec,
-  returnLimits = FALSE, limitFactor = 3, limitSide = "upper",
-  altUL = 0.001, altLL = 0)
+  ignorePeriods = 0, returnLimits = FALSE, limitFactor = 3,
+  limitSide = "upper", altUL = 0.001, altLL = 0)
 }
 \arguments{
 \item{sparseRateFrame}{a sparse data frame created using the \code{mergeCalSparseFrames} function}
 
 \item{ratePartitionVec}{a character string vector that specifies how to parition the categories in the data frame}
+
+\item{ignorePeriods}{a numeric, default of 0, that indicates how many periods from the current DateGroup to neglect in calculating the average and standard deviation}
 
 \item{returnLimits}{a logical with default FALSE that specifies whether or not the data frame returned should have limits}
 

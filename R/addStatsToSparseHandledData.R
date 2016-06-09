@@ -4,6 +4,7 @@
 #'
 #' @param sparseRateFrame a sparse data frame created using the \code{mergeCalSparseFrames} function
 #' @param ratePartitionVec a character string vector that specifies how to parition the categories in the data frame
+#' @param ignorePeriods a numeric, default of 0, that indicates how many periods from the current DateGroup to neglect in calculating the average and standard deviation
 #' @param returnLimits a logical with default FALSE that specifies whether or not the data frame returned should have limits
 #' @param limitFactor a numeric, default of 3, that specifies the number of standard deviations from the mean to set the limit
 #' @param limitSide a character string, default of upper, that indicates whether the limit should be +X from the mean (upper), -X from the mean (lower), or +/-X from the mean (two.sided)
@@ -18,12 +19,18 @@
 #' altUL and altLL allow the user to specify an alternate limit that can be applied instead of the limitFactor.
 #' @export
 
-addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, returnLimits = FALSE, limitFactor = 3, limitSide = 'upper', altUL = 0.001, altLL = 0.00) {
+addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, ignorePeriods = 0, returnLimits = FALSE, limitFactor = 3, limitSide = 'upper', altUL = 0.001, altLL = 0.00) {
 
-  sparseRateFrame[,'combocat'] <- do.call(paste, c(sparseRateFrame[,ratePartitionVec], sep=','))
+  if(length(ratePartitionVec) == 1) {
+
+    sparseRateFrame[,'combocat'] <- sparseRateFrame[,ratePartitionVec]
+  } else {
+
+    sparseRateFrame[,'combocat'] <- do.call(paste, c(sparseRateFrame[,ratePartitionVec], sep=','))
+  }
+
   comboCats <- as.character(unique(sparseRateFrame[,'combocat']))
-
-  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE)))))
+  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
   sparseRateFrame <- merge(sparseRateFrame, avgFrame, by='combocat')
 
   if(returnLimits == FALSE) {
@@ -31,7 +38,7 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, retur
     return(sparseRateFrame)
   } else {
 
-    sdFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Sdev = sd(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE)))))
+    sdFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Sdev = sd(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
     sparseRateFrame <- merge(sparseRateFrame, sdFrame, by='combocat')
 
     if(limitSide == 'upper') {
