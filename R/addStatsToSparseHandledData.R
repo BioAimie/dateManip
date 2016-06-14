@@ -31,6 +31,8 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, ignor
 
   comboCats <- as.character(unique(sparseRateFrame[,'combocat']))
   avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
+  avgFrame[,'Avg'] <- as.numeric(as.character(avgFrame[,'Avg']))
+  avgFrame[is.nan(avgFrame[,'Avg']),'Avg'] <- NA
   sparseRateFrame <- merge(sparseRateFrame, avgFrame, by='combocat')
 
   if(returnLimits == FALSE) {
@@ -40,50 +42,34 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, ignor
 
     sdFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Sdev = sd(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
     sparseRateFrame <- merge(sparseRateFrame, sdFrame, by='combocat')
+    sparseRateFrame[,'Sdev'] <- as.numeric(as.character(sparseRateFrame[,'Sdev']))
 
     if(limitSide == 'upper') {
 
-      maxFrame <- as.data.frame(cbind(combocat = comboCats, Max = sapply(1:length(comboCats), function(x) ifelse(max(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE) > altUL, max(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE), altUL))))
-      sparseRateFrame <- merge(sparseRateFrame, maxFrame, by='combocat')
-      sparseRateFrame[,'Avg'] <- as.numeric(as.character(sparseRateFrame[,'Avg']))
-      sparseRateFrame[,'Sdev'] <- as.numeric(as.character(sparseRateFrame[,'Sdev']))
-      sparseRateFrame[,'Max'] <- as.numeric(as.character(sparseRateFrame[,'Max']))
       sparseRateFrame[,'UL'] <- sparseRateFrame[,'Avg'] + limitFactor*sparseRateFrame[,'Sdev']
+      sparseRateFrame[,'UL'] <- with(sparseRateFrame, ifelse(UL < altUL, altUL, UL))
       sparseRateFrame[,'Color'] <- with(sparseRateFrame, ifelse(Rate > UL, 'review','pass'))
       keepCols <- colnames(sparseRateFrame)[!(colnames(sparseRateFrame) %in% colnames(sparseRateFrame)[grep('combocat|Max', colnames(sparseRateFrame))])]
-
-      return(sparseRateFrame[,keepCols])
     } else if(limitSide == 'lower') {
 
-      minFrame <- as.data.frame(cbind(combocat = comboCats, Min = sapply(1:length(comboCats), function(x) ifelse(min(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE) < altLL, min(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE), altLL))))
-      sparseRateFrame <- merge(sparseRateFrame, minFrame, by='combocat')
-      sparseRateFrame[,'Avg'] <- as.numeric(as.character(sparseRateFrame[,'Avg']))
-      sparseRateFrame[,'Sdev'] <- as.numeric(as.character(sparseRateFrame[,'Sdev']))
-      sparseRateFrame[,'Min'] <- as.numeric(as.character(sparseRateFrame[,'Min']))
       sparseRateFrame[,'LL'] <- sparseRateFrame[,'Avg'] - limitFactor*sparseRateFrame[,'Sdev']
+      sparseRateFrame[,'LL'] <- with(sparseRateFrame, ifelse(LL > altLL, altLL, LL))
       sparseRateFrame[,'Color'] <- with(sparseRateFrame, ifelse(Rate < LL, 'review','pass'))
       keepCols <- colnames(sparseRateFrame)[!(colnames(sparseRateFrame) %in% colnames(sparseRateFrame)[grep('combocat|Min', colnames(sparseRateFrame))])]
-
-      return(sparseRateFrame[,keepCols])
     } else if(limitSide == 'two.sided') {
 
-      minFrame <- as.data.frame(cbind(combocat = comboCats, Min = sapply(1:length(comboCats), function(x) ifelse(min(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE) < altLL, min(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE), altLL))))
-      maxFrame <- as.data.frame(cbind(combocat = comboCats, Max = sapply(1:length(comboCats), function(x) ifelse(max(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE) > altUL, max(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'], na.rm=TRUE), altUL))))
-      sparseRateFrame <- merge(sparseRateFrame, minFrame, by='combocat')
-      sparseRateFrame <- merge(sparseRateFrame, maxFrame, by='combocat')
-      sparseRateFrame[,'Avg'] <- as.numeric(as.character(sparseRateFrame[,'Avg']))
-      sparseRateFrame[,'Sdev'] <- as.numeric(as.character(sparseRateFrame[,'Sdev']))
-      sparseRateFrame[,'Min'] <- as.numeric(as.character(sparseRateFrame[,'Min']))
-      sparseRateFrame[,'Max'] <- as.numeric(as.character(sparseRateFrame[,'Max']))
-      sparseRateFrame[,'LL'] <- sparseRateFrame[,'Avg'] - limitFactor*sparseRateFrame[,'Sdev']
       sparseRateFrame[,'UL'] <- sparseRateFrame[,'Avg'] + limitFactor*sparseRateFrame[,'Sdev']
+      sparseRateFrame[,'LL'] <- sparseRateFrame[,'Avg'] - limitFactor*sparseRateFrame[,'Sdev']
+      sparseRateFrame[,'UL'] <- with(sparseRateFrame, ifelse(UL < altUL, altUL, UL))
+      sparseRateFrame[,'LL'] <- with(sparseRateFrame, ifelse(LL > altLL, altLL, LL))
       sparseRateFrame[,'Color'] <- with(sparseRateFrame, ifelse(Rate < LL | Rate > UL, 'review','pass'))
       keepCols <- colnames(sparseRateFrame)[!(colnames(sparseRateFrame) %in% colnames(sparseRateFrame)[grep('combocat|Max|Min', colnames(sparseRateFrame))])]
-
-      return(sparseRateFrame[,keepCols])
     } else {
 
       stop("The limitSide parameter has been specified incorrectly... the function take three options: 'upper', 'lower', or 'two.sided'.")
     }
+
+    sparseRateFrame <- sparseRateFrame[!(is.na(sparseRateFrame[,'Avg'])), ]
+    return(sparseRateFrame[,keepCols])
   }
 }
