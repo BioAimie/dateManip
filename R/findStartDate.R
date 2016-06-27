@@ -21,7 +21,7 @@ findStartDate <- function(msCalFrame, yearSubGroup, timeUnitsToKeep, rollPeriods
 
   if(rollPeriods > 0) {
 
-    timeUnitsToKeep <- timeUnitsToKeep + rollPeriods
+    timeUnitsToKeep <- timeUnitsToKeep + rollPeriods - 1
   }
 
   if(timeUnitsToKeep > max(uniqueCal[,'Index'])) {
