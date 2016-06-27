@@ -30,7 +30,7 @@ addStatsToSparseHandledData <- function(sparseRateFrame, ratePartitionVec, ignor
   }
 
   comboCats <- as.character(unique(sparseRateFrame[,'combocat']))
-  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
+  avgFrame <- as.data.frame(do.call(rbind, lapply(1:length(comboCats), function(x) cbind(combocat = comboCats[x], Avg = mean(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], ][with(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x], ], order(DateGroup)), 'Rate'][1:(length(sparseRateFrame[sparseRateFrame[,'combocat'] == comboCats[x],'DateGroup']) - ignorePeriods)], na.rm=TRUE)))))
   avgFrame[,'Avg'] <- as.numeric(as.character(avgFrame[,'Avg']))
   avgFrame[is.nan(avgFrame[,'Avg']),'Avg'] <- NA
   sparseRateFrame <- merge(sparseRateFrame, avgFrame, by='combocat')
