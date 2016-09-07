@@ -12,17 +12,17 @@
 
 createWeeksLikeCDC <- function(calFrame) {
 
-  calendarFrame[,'Year'] <- year(calendarFrame[,'Date'])
-  calendarFrame[,'DayOfYear'] <- yday(calendarFrame[,'Date'])
+  calFrame[,'Year'] <- year(calFrame[,'Date'])
+  calFrame[,'DayOfYear'] <- yday(calFrame[,'Date'])
 
-  years <- unique(calendarFrame[,'Year'])
+  years <- unique(calFrame[,'Year'])
   leapYears <- years[(years %% 4 == 0)]
 
   outFrame <- c()
 
   for(i in 1:length(years)) {
 
-    yearFrame <- calendarFrame[calendarFrame[,'Year'] == years[i], ]
+    yearFrame <- calFrame[calFrame[,'Year'] == years[i], ]
 
     if(!(years[i] %in% leapYears)) {
 
