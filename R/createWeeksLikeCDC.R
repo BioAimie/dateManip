@@ -10,7 +10,7 @@
 #' This function takes a calFrame and returns a data.frame that contains the date with its corresponding CDC reporting week
 #' @export
 
-makeEvenWeeks <- function(calFrame) {
+createWeeksLikeCDC <- function(calFrame) {
 
   calendarFrame[,'Year'] <- year(calendarFrame[,'Date'])
   calendarFrame[,'DayOfYear'] <- yday(calendarFrame[,'Date'])
