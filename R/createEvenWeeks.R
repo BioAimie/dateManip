@@ -1,16 +1,16 @@
-#' Create weeks similar to CDC reporting periods
+#' Create weeks that are relatively even such that there are 52 weeks in the year
 #'
 #' This function takes in a calendar data frame that has an entry for every date since a starting point up through today and
-#' returns a data frame that has a week number matching CDC reporting for each assoicated date.
+#' returns a data frame that has a week number 1-52 that are approximately even starting with Jan 1 as Week 1, day 1.
 #'
 #' @param calFrame a data frame containing a column of consecutive dates
-#' @return a data frame that contains the date and the corresponding CDC reporting week
+#' @return a data frame that contains the date and the corresponding even week
 #' @author Aimie Faucett
 #' @details
 #' This function takes a calFrame and returns a data.frame that contains the date with its corresponding CDC reporting week
 #' @export
 
-createWeeksLikeCDC <- function(calFrame) {
+createEvenWeek <- function(calFrame) {
 
   calFrame[,'Year'] <- year(calFrame[,'Date'])
   calFrame[,'DayOfYear'] <- yday(calFrame[,'Date'])
