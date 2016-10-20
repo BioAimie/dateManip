@@ -36,9 +36,15 @@ transformToEpiWeeks <- function(calFrame) {
   epiFrame[,'Seq'] <- seq(1, length(epiFrame$Date), 1)
 
   epiFrame.top <- data.frame(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==1, 'Seq'], ], AdjWeek = max(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==1, 'Seq'], 'EpiWeek']), AdjYear = median(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==1, 'Seq'], 'Year']))
-  epiFrame.bot <- do.call(rbind, lapply(2:max(epiFrame$newIndex, na.rm=TRUE), function(x) data.frame(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), ], AdjWeek = rep(max(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), 'EpiWeek']), 7), AdjYear = rep(median(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), 'Year']), 7))))
+  epiFrame.mid <- do.call(rbind, lapply(2:max(epiFrame$newIndex, na.rm=TRUE), function(x) data.frame(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), ], AdjWeek = rep(max(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), 'EpiWeek']), 7), AdjYear = rep(median(epiFrame[epiFrame$Seq <= epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq'] & epiFrame$Seq >= (epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==x, 'Seq']-6), 'Year']), 7))))
+  if(is.na(epiFrame[epiFrame$Seq == max(epiFrame$Seq), 'Index'])) {
 
-  epiFrame <- rbind(epiFrame.top, epiFrame.bot)
+    epiFrame.bot <- data.frame(epiFrame[epiFrame$Seq > max(epiFrame[epiFrame$Index==1, 'Seq'], na.rm=TRUE), ], AdjWeek = max(epiFrame[epiFrame$Seq > epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==max(epiFrame$newIndex, na.rm=TRUE), 'Seq'], 'EpiWeek']), AdjYear = median(epiFrame[epiFrame$Seq > epiFrame[!(is.na(epiFrame$newIndex)) & epiFrame$newIndex==max(epiFrame$newIndex, na.rm=TRUE), 'Seq'],'Year']))
+    epiFrame <- rbind(epiFrame.top, epiFrame.mid, epiFrame.bot)
+  } else {
+
+    epiFrame <- rbind(epiFrame.top, epiFrame.mid)
+  }
 
   epiFrame <- epiFrame[,c('Date','AdjYear','AdjWeek')]
   colnames(epiFrame) <- c('Date','Year','Week')
