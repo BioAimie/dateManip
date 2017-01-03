@@ -18,7 +18,7 @@ createCalendarLikeMicrosoft <- function(startYear, yearSubGroup) {
   thisYear <- year(Sys.Date())
   datesToInclude <- data.frame(Date = do.call(c, lapply(startYear:thisYear, function(year) seq(as.Date(paste0(year,'/1/1')), as.Date(paste0(year,'/12/31')), 'day'))))
   datesToInclude[,'Year'] <- year(datesToInclude[,'Date'])
-  datesToInclude <- datesToInclude[datesToInclude[,'Date'] <= Sys.Date(), ]
+  # datesToInclude <- datesToInclude[datesToInclude[,'Date'] <= Sys.Date(), ]
 
   years <- as.character(unique(datesToInclude[,'Year']))
 
@@ -32,19 +32,12 @@ createCalendarLikeMicrosoft <- function(startYear, yearSubGroup) {
       subFrame[,'DayOfWeek'] <- format(subFrame[,'Date'],'%w')
       subFrame[,'Index'] <- seq(1, length(subFrame[,'Date']), 1)
       cutBreaks <- which(subFrame[,'DayOfWeek'] == '0')
-
-      if(years[i] != thisYear) {
-
-        cutLabels <- seq(1, 53, 1)
-      } else {
-
-        upTo <- length(subFrame[subFrame[,'DayOfWeek'] == subFrame[subFrame[,'Index'] == max(subFrame[,'Index']), 'DayOfWeek'], 'Index']) + 1
-        cutLabels <- seq(1, upTo, 1)
-      }
+      cutLabels <- seq(1, 53, 1)
 
       if(min(cutBreaks) == 1) {
 
         subFrame[,'Week'] <- cut(subFrame[,'Index'], breaks = c(cutBreaks, 366), include.lowest = TRUE, right = FALSE, labels = cutLabels)
+
       } else {
 
         if(length(levels(cut(subFrame[,'Index'], breaks = c(1, cutBreaks, 366)))) < length(cutLabels)) {
@@ -80,6 +73,6 @@ createCalendarLikeMicrosoft <- function(startYear, yearSubGroup) {
     outFrame <- rbind(outFrame, subFrame)
   }
 
-  outFrame <- outFrame[,c('Date','Year',yearSubGroup,'DateGroup')]
+  outFrame <- outFrame[outFrame[,'Date'] <= Sys.Date(), c('Date','Year',yearSubGroup,'DateGroup')]
   return(outFrame)
 }
