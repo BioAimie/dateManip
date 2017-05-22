@@ -38,4 +38,3 @@ returns a data.frame that contains all DateGroups (per the msCalFrame), colsToAg
 \author{
 Aimie Faucett
 }
-

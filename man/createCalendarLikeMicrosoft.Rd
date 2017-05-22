@@ -25,4 +25,3 @@ with Microsoft's Excel WEEKNUM and SQL DATEPART(ww, ) functions.
 \author{
 Aimie Faucett
 }
-

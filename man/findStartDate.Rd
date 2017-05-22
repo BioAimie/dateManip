@@ -4,7 +4,8 @@
 \alias{findStartDate}
 \title{Find the start date in the format of a character DateGroup using today's DateGroup as the starting point.}
 \usage{
-findStartDate(msCalFrame, yearSubGroup, timeUnitsToKeep, rollPeriods = 0)
+findStartDate(msCalFrame, yearSubGroup, timeUnitsToKeep, rollPeriods = 0,
+  keepPeriods)
 }
 \arguments{
 \item{msCalFrame}{is a data frame (non-sparse) of all dates and DateGroups, an output of \code{createCalendarLikeMicrosoft} function}
@@ -14,6 +15,8 @@ findStartDate(msCalFrame, yearSubGroup, timeUnitsToKeep, rollPeriods = 0)
 \item{timeUnitsToKeep}{is a numeric value indicating how many of DateGroup entries to keep (incremented by 1 backwards from today's DateGroup)}
 
 \item{rollPeriods}{is a numeric value indicating how many additional periods should be included in case the user wants to find a rolling sum, the default is 0.}
+
+\item{keepPeriods}{is a numeric value indicating how many periods to keep such that the limit at calculation is the same as what it would have been when the period was current.}
 }
 \value{
 a character string DateGroup at timeUnitsToKeep + rollPeriods prior (e.g. 2016-01 if today's DateGroup is 2016-10 and timeUnitsToKeep = 9 and rollPeriods = 0)
@@ -29,4 +32,3 @@ rollPeriods prior to the most current DateGroup.
 \author{
 Aimie Faucett
 }
-

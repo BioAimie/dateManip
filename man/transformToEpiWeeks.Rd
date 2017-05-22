@@ -22,4 +22,3 @@ This function takes a calFrame and returns a data.frame that contains the date w
 \author{
 Aimie Faucett
 }
-

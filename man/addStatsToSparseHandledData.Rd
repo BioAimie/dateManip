@@ -6,7 +6,7 @@
 \usage{
 addStatsToSparseHandledData(sparseRateFrame, ratePartitionVec,
   ignorePeriods = 0, returnLimits = FALSE, limitFactor = 3,
-  limitSide = "upper", altUL = 0.001, altLL = 0)
+  limitSide = "upper", altUL = 0.001, altLL = 0, keepPeriods)
 }
 \arguments{
 \item{sparseRateFrame}{a sparse data frame created using the \code{mergeCalSparseFrames} function}
@@ -24,6 +24,10 @@ addStatsToSparseHandledData(sparseRateFrame, ratePartitionVec,
 \item{altUL}{a numeric, default of 0.001, that indicates a default limit if the altUL > limitFactor*sd(X)}
 
 \item{altLL}{a numeric, default of 0, that indicates a default limit if the altLL < limitFactor*sd(X)}
+
+\item{keepPeriods}{is an integer indicating the number of dategroup periods that will going into calculating the mean/standard deviation (i.e. 2 would mean 2 weeks if you have week dategroups)}
+
+\item{dategroup}{is a string indicating which dategroup the input sparseRateFrame has, i.e. "Week", "Month", "Quarter"}
 }
 \value{
 a data frame that contains the orginal columns in sparseRateFrame, as well as an average for each of the ratePartitionVec combinations. It may also have limits if limit parameters are specified.
@@ -40,4 +44,3 @@ altUL and altLL allow the user to specify an alternate limit that can be applied
 \author{
 Aimie Faucett
 }
-

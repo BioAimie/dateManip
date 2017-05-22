@@ -39,4 +39,3 @@ mergeColsX and mergeColsY and then finding a rate for each unique combination of
 \author{
 Aimie Faucett
 }
-

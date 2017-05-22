@@ -10,4 +10,4 @@ Description: Manipulates data frames with date information such that all dates
     values across the date sequence.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
